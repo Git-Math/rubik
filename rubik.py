@@ -166,6 +166,30 @@ class Cube:
         self.f.set_edge(self.u.get_d(), self.d.get_u(), self.r.get_l(), self.l.get_r())
         self.b.set_edge(self.u.get_u(), self.d.get_d(), self.l.get_l(), self.r.get_r())
 
+        self.switch_move = {
+            "U": self.u.rotate(),
+            "U'": self.u.rotate_prime(),
+            "U2": self.u.rotate2(),
+            "D": self.d.rotate(),
+            "D'": self.d.rotate_prime(),
+            "D2": self.d.rotate2(),
+            "R": self.r.rotate(),
+            "R'": self.r.rotate_prime(),
+            "R2": self.r.rotate2(),
+            "L": self.l.rotate(),
+            "L'": self.l.rotate_prime(),
+            "L2": self.l.rotate2(),
+            "F": self.f.rotate(),
+            "F'": self.f.rotate_prime(),
+            "F2": self.f.rotate2(),
+            "B": self.b.rotate(),
+            "B'": self.b.rotate_prime(),
+            "B2": self.b.rotate2()
+        }
+
+    def move(self, m)
+        self.witch_move.get(m)
+
 if __name__ == '__main__':
     if len(sys.argv) != 2:
         print("Invalid argument number", file=sys.stderr)
