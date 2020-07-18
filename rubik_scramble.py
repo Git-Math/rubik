@@ -1,6 +1,6 @@
 import sys
 import random
-import rubik
+import cube
 
 def usage():
     print("usage: %s <number> <length>\n\
@@ -8,7 +8,7 @@ def usage():
 <length>: length of one scramble (must be a number between 1 and 999)" % sys.argv[0])
 
 def print_scramble(length, last_move):
-    move = random.choice([x for x in rubik.move_list if len(last_move) == 0 or x[0] != last_move[0]])
+    move = random.choice([x for x in cube.move_list if len(last_move) == 0 or x[0] != last_move[0]])
     print(move, end="")
     if length <= 1:
         print()
