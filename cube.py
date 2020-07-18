@@ -1,4 +1,15 @@
+import sys
+
 move_list = ["U", "U'", "U2", "D", "D'", "D2", "R", "R'", "R2", "L", "L'", "L2", "F", "F'", "F2", "B", "B'", "B2"]
+
+move_list_no_dict = {
+    "U": [x for x in move_list if x[0] != "U"],
+    "D": [x for x in move_list if x[0] != "D"],
+    "R": [x for x in move_list if x[0] != "R"],
+    "L": [x for x in move_list if x[0] != "L"],
+    "F": [x for x in move_list if x[0] != "F"],
+    "B": [x for x in move_list if x[0] != "B"]
+}
 
 reverse_move_dict = {
     "U": "U'",
@@ -144,6 +155,21 @@ class Face:
         self.rotate2_face()
         self.rotate2_edge()
 
+    def is_solved(self):
+        color = self.face[1][1].color
+        for line in self.face:
+            for square in line:
+                if square.color != color:
+                    return False
+        return True
+
+    def print(self):
+        for line in self.face:
+            for square in line:
+                print(square.color, end=" ")
+            print()
+        print()
+
 class Cube:
     def __init__(self):
         self.u = Face("y")
@@ -161,25 +187,69 @@ class Cube:
         self.b.set_edge(self.u.get_u(), self.d.get_d(), self.l.get_l(), self.r.get_r())
 
         self.switch_move = {
-            "U": self.u.rotate(),
-            "U'": self.u.rotate_prime(),
-            "U2": self.u.rotate2(),
-            "D": self.d.rotate(),
-            "D'": self.d.rotate_prime(),
-            "D2": self.d.rotate2(),
-            "R": self.r.rotate(),
-            "R'": self.r.rotate_prime(),
-            "R2": self.r.rotate2(),
-            "L": self.l.rotate(),
-            "L'": self.l.rotate_prime(),
-            "L2": self.l.rotate2(),
-            "F": self.f.rotate(),
-            "F'": self.f.rotate_prime(),
-            "F2": self.f.rotate2(),
-            "B": self.b.rotate(),
-            "B'": self.b.rotate_prime(),
-            "B2": self.b.rotate2()
+            "U": self.u.rotate,
+            "U'": self.u.rotate_prime,
+            "U2": self.u.rotate2,
+            "D": self.d.rotate,
+            "D'": self.d.rotate_prime,
+            "D2": self.d.rotate2,
+            "R": self.r.rotate,
+            "R'": self.r.rotate_prime,
+            "R2": self.r.rotate2,
+            "L": self.l.rotate,
+            "L'": self.l.rotate_prime,
+            "L2": self.l.rotate2,
+            "F": self.f.rotate,
+            "F'": self.f.rotate_prime,
+            "F2": self.f.rotate2,
+            "B": self.b.rotate,
+            "B'": self.b.rotate_prime,
+            "B2": self.b.rotate2
         }
 
     def move(self, m):
-        self.switch_move.get(m)
+        self.switch_move.get(m)()
+
+    def scramble(self, scramble_move_list):
+        for scramble_move in scramble_move_list:
+            if scramble_move in move_list:
+                self.move(scramble_move)
+            else:
+                print("Invalid scramble move:", scramble_move, "\n\
+Valid moves:", *move_list, file=sys.stderr)
+                sys.exit(1)
+
+    def is_solved(self):
+        if self.u.is_solved() and self.d.is_solved() and self.r.is_solved() and self.l.is_solved() and self.f.is_solved() and self.b.is_solved():
+            return True
+        return False
+
+    def search_short_solution(self, current_move_list, solution, i):
+        for move in current_move_list:
+            solution.append(move)
+            self.move(move)
+            if self.is_solved():
+                return True, solution
+            if i > 1:
+                ret = self.search_short_solution(move_list_no_dict[move[0]], solution, i - 1)
+                if ret[0]:
+                    return ret
+            solution.pop()
+            self.move(reverse_move_dict[move])
+        return False, []
+
+    def print(self):
+        print("U:")
+        self.u.print()
+        print("D:")
+        self.d.print()
+        print("R:")
+        self.r.print()
+        print("L:")
+        self.l.print()
+        print("F:")
+        self.f.print()
+        print("B:")
+        self.b.print()
+        print("################################")
+
