@@ -219,6 +219,15 @@ class Cube:
 Valid moves:", *move_list, file=sys.stderr)
                 sys.exit(1)
 
+    def reverse_solution(self, solution):
+        for move in solution:
+            if move in move_list[::-1]:
+                self.move(reverse_move_dict[move])
+            else:
+                print("Invalid solution move:", move, "\n\
+Valid moves:", *move_list, file=sys.stderr)
+                sys.exit(1)
+
     def is_solved(self):
         if self.u.is_solved() and self.d.is_solved() and self.r.is_solved() and self.l.is_solved() and self.f.is_solved() and self.b.is_solved():
             return True
