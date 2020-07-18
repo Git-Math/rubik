@@ -1,42 +1,19 @@
 import sys
 import random
+import rubik
 
 def usage():
     print("usage: %s <number> <length>\n\
 <number>: number of scramble (must be a number between 1 and 99)\n\
 <length>: length of one scramble (must be a number between 1 and 999)" % sys.argv[0])
 
-move_list = ["U", "U'", "U2", "D", "D'", "D2", "R", "R'", "R2", "L", "L'", "L2", "F", "F'", "F2", "B", "B'", "B2"]
-
-reverse_move_dict = {
-    "": "",
-    "U": "U'",
-    "U'": "U",
-    "U2": "U2",
-    "D": "D'",
-    "D'": "D",
-    "D2": "D2",
-    "R": "R'",
-    "R'": "R",
-    "R2": "R2",
-    "L": "L'",
-    "L'": "L",
-    "L2": "L2",
-    "F": "F'",
-    "F'": "F",
-    "F2": "F2",
-    "B": "B'",
-    "B'": "B",
-    "B2": "B2"
-}
-
 def print_scramble(length, last_move):
-    move = random.choice([x for x in move_list if x != reverse_move_dict[last_move]])
-    print(move, end='')
+    move = random.choice([x for x in rubik.move_list if len(last_move) == 0 or x[0] != last_move[0]])
+    print(move, end="")
     if length <= 1:
         print()
     else:
-        print(" ", end='')
+        print(" ", end="")
         print_scramble(length - 1, move)
     
 
