@@ -32,6 +32,7 @@ if __name__ == '__main__':
     ret = rubiks_cube.search_short_solution(cube.move_list, [], 3)
     if ret[0]:
         print("Short solution:", *ret[1])
+        rubiks_cube.reverse_solution(ret[1])
         print_cube.print_cube(rubiks_cube, ret[1])
         sys.exit(0)
 
