@@ -33,6 +33,6 @@ if __name__ == '__main__':
     if ret[0]:
         print("Short solution:", *ret[1])
         rubiks_cube.reverse_solution(ret[1])
-        print_cube.print_cube(rubiks_cube, ret[1])
+        print_cube.print_cube(rubiks_cube, ret[1], None)
         sys.exit(0)
 
