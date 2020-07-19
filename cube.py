@@ -220,8 +220,8 @@ Valid moves:", *move_list, file=sys.stderr)
                 sys.exit(1)
 
     def reverse_solution(self, solution):
-        for move in solution:
-            if move in move_list[::-1]:
+        for move in solution[::-1]:
+            if move in move_list:
                 self.move(reverse_move_dict[move])
             else:
                 print("Invalid solution move:", move, "\n\
