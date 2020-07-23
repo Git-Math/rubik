@@ -115,16 +115,16 @@ class Face:
 
     # getters
     def get_u(self):
-        return [self.face[0][0], self.face[0][1], self.face[0][2]]
+        return [self.face[0][2], self.face[0][1], self.face[0][0]]
 
     def get_d(self):
-        return [self.face[2][2], self.face[2][1], self.face[2][0]]
+        return [self.face[2][0], self.face[2][1], self.face[2][2]]
 
     def get_r(self):
-        return [self.face[0][2], self.face[1][2], self.face[2][2]]
+        return [self.face[2][2], self.face[1][2], self.face[0][2]]
 
     def get_l(self):
-        return [self.face[2][0], self.face[1][0], self.face[0][0]]
+        return [self.face[0][0], self.face[1][0], self.face[2][0]]
 
     # setters
     def set_edge(self, u, d, r, l):
