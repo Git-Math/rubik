@@ -189,13 +189,17 @@ class Face:
             for line in self.face
         ])
 class Cube:
-    def __init__(self):
+    def __init__(self, real_cube=False):
         self.u = Face("y")
         self.d = Face("w")
         self.r = Face("g")
         self.l = Face("b")
-        self.f = Face("r")
-        self.b = Face("o")
+        if real_cube:
+            self.f = Face("o")
+            self.b = Face("r")
+        else:
+            self.f = Face("r")
+            self.b = Face("o")
 
         self.u.set_edge(self.b.get_u(), self.f.get_u(), self.r.get_u(), self.l.get_u())
         self.d.set_edge(self.f.get_d(), self.b.get_d(), self.l.get_d(), self.r.get_d())
