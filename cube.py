@@ -167,6 +167,28 @@ class Face:
         self.rotate2_face()
         self.rotate2_edge()
 
+    def rotate_x(self):
+        swap = self.u_edge
+        self.u_edge = self.l_edge
+        self.l_edge = self.d_edge
+        self.d_edge = self.r_edge
+        self.r_edge = swap
+
+    def rotate_prime_x(self):
+        swap = self.u_edge
+        self.u_edge = self.r_edge
+        self.r_edge = self.d_edge
+        self.d_edge = self.l_edge
+        self.l_edge = swap
+
+    def rotate2_x(self):
+        swap = self.u_edge
+        self.u_edge = self.d_edge
+        self.d_edge = swap
+        swap = self.r_edge
+        self.r_edge = self.l_edge
+        self.l_edge = swap
+
     # misc
     def is_solved(self):
         color = self.face[1][1].color
@@ -227,6 +249,43 @@ class Cube:
 
     def move(self, m):
         self.switch_move.get(m)()
+
+    def rotate_x(self):
+        swap = self.f
+        self.f = self.r
+        self.r = self.b
+        self.b = self.l
+        self.l = swap
+
+        self.u.rotate_x()
+        self.u.rotate_face()
+        self.d.rotate_x()
+        self.d.rotate_prime_face()
+
+    def rotate_prime_x(self):
+        swap = self.f
+        self.f = self.l
+        self.l = self.b
+        self.b = self.r
+        self.r = swap
+
+        self.u.rotate_prime_x()
+        self.u.rotate_prime_face()
+        self.d.rotate_prime_x()
+        self.d.rotate_face()
+
+    def rotate2_x(self):
+        swap = self.f
+        self.f = self.b
+        self.b = swap
+        swap = self.r
+        self.r = self.l
+        self.l = swap
+
+        self.u.rotate2_x()
+        self.u.rotate2_face()
+        self.d.rotate2_x()
+        self.u.rotate2_face()
 
     def scramble(self, scramble_move_list):
         for scramble_move in scramble_move_list:
