@@ -107,7 +107,7 @@ if __name__ == '__main__':
 
     c = cube.Cube(real_cube=True)
     print(c)
-    inspect()
+    inspect(c)
 
     moves = cube.move_list * 10
     random.shuffle(moves)
@@ -116,4 +116,4 @@ if __name__ == '__main__':
     c.scramble(moves)
     print(c)
 
-    inspect()
+    inspect(c)
