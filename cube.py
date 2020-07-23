@@ -32,6 +32,69 @@ reverse_move_dict = {
     "B2": "B2"
 }
 
+x_move_dict = {
+    "U": "U",
+    "U'": "U'",
+    "U2": "U2",
+    "D": "D",
+    "D'": "D'",
+    "D2": "D2",
+    "R": "B",
+    "R'": "B'",
+    "R2": "B2",
+    "L": "F",
+    "L'": "F'",
+    "L2": "F2",
+    "F": "R",
+    "F'": "R'",
+    "F2": "R2",
+    "B": "L",
+    "B'": "L'",
+    "B2": "L2"
+}
+
+x_prime_move_dict = {
+    "U": "U",
+    "U'": "U'",
+    "U2": "U2",
+    "D": "D",
+    "D'": "D'",
+    "D2": "D2",
+    "R": "F",
+    "R'": "F'",
+    "R2": "F2",
+    "L": "B",
+    "L'": "B'",
+    "L2": "B2",
+    "F": "L",
+    "F'": "L'",
+    "F2": "L2",
+    "B": "R",
+    "B'": "R'",
+    "B2": "R2"
+}
+
+x2_move_dict = {
+    "U": "U",
+    "U'": "U'",
+    "U2": "U2",
+    "D": "D",
+    "D'": "D'",
+    "D2": "D2",
+    "R": "L",
+    "R'": "L'",
+    "R2": "L2",
+    "L": "R",
+    "L'": "R'",
+    "L2": "R2",
+    "F": "B",
+    "F'": "B'",
+    "F2": "B2",
+    "B": "F",
+    "B'": "F'",
+    "B2": "F2"
+}
+
 class Square:
     def __init__(self, color):
         self.color = color
@@ -52,16 +115,16 @@ class Face:
 
     # getters
     def get_u(self):
-        return [self.face[0][0], self.face[0][1], self.face[0][2]]
+        return [self.face[0][2], self.face[0][1], self.face[0][0]]
 
     def get_d(self):
-        return [self.face[2][2], self.face[2][1], self.face[2][0]]
+        return [self.face[2][0], self.face[2][1], self.face[2][2]]
 
     def get_r(self):
-        return [self.face[0][2], self.face[1][2], self.face[2][2]]
+        return [self.face[2][2], self.face[1][2], self.face[0][2]]
 
     def get_l(self):
-        return [self.face[2][0], self.face[1][0], self.face[0][0]]
+        return [self.face[0][0], self.face[1][0], self.face[2][0]]
 
     # setters
     def set_edge(self, u, d, r, l):
@@ -167,6 +230,28 @@ class Face:
         self.rotate2_face()
         self.rotate2_edge()
 
+    def rotate_x(self):
+        swap = self.u_edge
+        self.u_edge = self.l_edge
+        self.l_edge = self.d_edge
+        self.d_edge = self.r_edge
+        self.r_edge = swap
+
+    def rotate_prime_x(self):
+        swap = self.u_edge
+        self.u_edge = self.r_edge
+        self.r_edge = self.d_edge
+        self.d_edge = self.l_edge
+        self.l_edge = swap
+
+    def rotate2_x(self):
+        swap = self.u_edge
+        self.u_edge = self.d_edge
+        self.d_edge = swap
+        swap = self.r_edge
+        self.r_edge = self.l_edge
+        self.l_edge = swap
+
     # misc
     def is_solved(self):
         color = self.face[1][1].color
@@ -231,6 +316,43 @@ class Cube:
 
     def move(self, m):
         self.switch_move.get(m)()
+
+    def rotate_x(self):
+        swap = self.f
+        self.f = self.r
+        self.r = self.b
+        self.b = self.l
+        self.l = swap
+
+        self.u.rotate_x()
+        self.u.rotate_face()
+        self.d.rotate_x()
+        self.d.rotate_prime_face()
+
+    def rotate_prime_x(self):
+        swap = self.f
+        self.f = self.l
+        self.l = self.b
+        self.b = self.r
+        self.r = swap
+
+        self.u.rotate_prime_x()
+        self.u.rotate_prime_face()
+        self.d.rotate_prime_x()
+        self.d.rotate_face()
+
+    def rotate2_x(self):
+        swap = self.f
+        self.f = self.b
+        self.b = swap
+        swap = self.r
+        self.r = self.l
+        self.l = swap
+
+        self.u.rotate2_x()
+        self.u.rotate2_face()
+        self.d.rotate2_x()
+        self.u.rotate2_face()
 
     def scramble(self, scramble_move_list):
         for scramble_move in scramble_move_list:
