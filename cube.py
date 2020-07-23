@@ -36,29 +36,41 @@ class Square:
     def __init__(self, color):
         self.color = color
 
+    def __repr__(self):
+        return self.color
 class Face:
     def __init__(self, color):
-        self.face = [[Square(color), Square(color), Square(color)], [Square(color), Square(color), Square(color)], [Square(color), Square(color), Square(color)]]
+        self.face = [
+            [Square(color), Square(color), Square(color)],
+            [Square(color), Square(color), Square(color)],
+            [Square(color), Square(color), Square(color)]
+        ]
         self.u_edge = None
         self.d_edge = None
         self.r_edge = None
         self.l_edge = None
 
+    # getters
     def get_u(self):
         return [self.face[0][0], self.face[0][1], self.face[0][2]]
+
     def get_d(self):
         return [self.face[2][2], self.face[2][1], self.face[2][0]]
+
     def get_r(self):
         return [self.face[0][2], self.face[1][2], self.face[2][2]]
+
     def get_l(self):
         return [self.face[2][0], self.face[1][0], self.face[0][0]]
 
+    # setters
     def set_edge(self, u, d, r, l):
         self.u_edge = u
         self.d_edge = d
         self.r_edge = r
         self.l_edge = l
 
+    # rotaters (yes, that's a word)
     def rotate_face(self):
         swap = self.face[0][0].color
         self.face[0][0].color = self.face[2][0].color
@@ -155,6 +167,7 @@ class Face:
         self.rotate2_face()
         self.rotate2_edge()
 
+    # misc
     def is_solved(self):
         color = self.face[1][1].color
         for line in self.face:
@@ -170,6 +183,11 @@ class Face:
             print()
         print()
 
+    def __repr__(self):
+        return "\n".join([
+            " ".join([square.color for square in line])
+            for line in self.face
+        ])
 class Cube:
     def __init__(self):
         self.u = Face("y")
@@ -262,3 +280,17 @@ Valid moves:", *move_list, file=sys.stderr)
         self.b.print()
         print("################################")
 
+    def __repr__(self):
+        return f"""U:
+{self.u}
+D:
+{self.d}
+R:
+{self.r}
+L:
+{self.l}
+F:
+{self.f}
+B:
+{self.b}
+################################"""
