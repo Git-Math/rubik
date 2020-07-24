@@ -262,10 +262,14 @@ class Face:
         return True
 
     def __repr__(self):
-        return "\n".join([
+        return f"""u_edge: {self.u_edge}
+d_edge: {self.d_edge}
+r_edge: {self.r_edge}
+l_edge: {self.l_edge}\n""" + "\n".join([
             " ".join([square.color for square in line])
             for line in self.face
         ])
+
 class Cube:
     def __init__(self, real_cube=False):
         self.u = Face("y")
