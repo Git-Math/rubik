@@ -280,7 +280,7 @@ class Cube:
             self.b = Face("o")
 
         self.u.set_edge(self.b.get_u(), self.f.get_u(), self.r.get_u(), self.l.get_u())
-        self.d.set_edge(self.f.get_d(), self.b.get_d(), self.l.get_d(), self.r.get_d())
+        self.d.set_edge(self.f.get_d(), self.b.get_d(), self.r.get_d(), self.l.get_d())
         self.r.set_edge(self.u.get_r(), self.d.get_r(), self.b.get_l(), self.f.get_r())
         self.l.set_edge(self.u.get_l(), self.d.get_l(), self.f.get_l(), self.b.get_r())
         self.f.set_edge(self.u.get_d(), self.d.get_u(), self.r.get_l(), self.l.get_r())
