@@ -1,6 +1,7 @@
 import sys
 import print_cube
 import cube
+import solve
 
 def usage():
     print("usage: %s <scramble>\n\
@@ -23,16 +24,19 @@ if __name__ == '__main__':
         sys.exit(1)
 
     rubiks_cube = cube.Cube()
-    rubiks_cube.scramble(scramble_move_list)
+    rubiks_cube.move_sequence(scramble_move_list)
 
     if rubiks_cube.is_solved():
         print("This rubik's cube is already solved")
         sys.exit(0)
 
-    ret = rubiks_cube.search_short_solution(cube.move_list, [], 3)
-    if ret[0]:
-        print("Short solution:", *ret[1])
-        rubiks_cube.reverse_solution(ret[1])
-        print_cube.print_cube(rubiks_cube, ret[1], None)
-        sys.exit(0)
+    #ret = rubiks_cube.search_short_solution(cube.move_list, [], 3)
+    #if ret[0]:
+        #print("Short solution:", *ret[1])
+        #rubiks_cube.reverse_solution(ret[1])
+        #print_cube.print_cube(rubiks_cube, ret[1], None)
+        #sys.exit(0)
 
+    solution, step = solve.solve(rubiks_cube)
+    rubiks_cube.reverse_solution(solution)
+    print_cube.print_cube(rubiks_cube, solution, None)
