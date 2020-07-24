@@ -283,6 +283,9 @@ class Cube:
             self.f = Face("r")
             self.b = Face("o")
 
+        self.set_edges()
+
+    def set_edges(self):
         self.u.set_edge(self.b.get_u(), self.f.get_u(), self.r.get_u(), self.l.get_u())
         self.d.set_edge(self.f.get_d(), self.b.get_d(), self.r.get_d(), self.l.get_d())
         self.r.set_edge(self.u.get_r(), self.d.get_r(), self.b.get_l(), self.f.get_r())
@@ -290,6 +293,7 @@ class Cube:
         self.f.set_edge(self.u.get_d(), self.d.get_u(), self.r.get_l(), self.l.get_r())
         self.b.set_edge(self.u.get_u(), self.d.get_d(), self.l.get_l(), self.r.get_r())
 
+    def move(self, m):
         self.switch_move = {
             "U": self.u.rotate,
             "U'": self.u.rotate_prime,
@@ -310,8 +314,6 @@ class Cube:
             "B'": self.b.rotate_prime,
             "B2": self.b.rotate2
         }
-
-    def move(self, m):
         self.switch_move.get(m)()
 
     def rotate_x(self):
@@ -321,10 +323,10 @@ class Cube:
         self.b = self.l
         self.l = swap
 
-        self.u.rotate_x()
         self.u.rotate_face()
-        self.d.rotate_x()
         self.d.rotate_prime_face()
+
+        self.set_edges()
 
     def rotate_prime_x(self):
         swap = self.f
@@ -333,10 +335,10 @@ class Cube:
         self.b = self.r
         self.r = swap
 
-        self.u.rotate_prime_x()
         self.u.rotate_prime_face()
-        self.d.rotate_prime_x()
         self.d.rotate_face()
+
+        self.set_edges()
 
     def rotate2_x(self):
         swap = self.f
@@ -346,17 +348,17 @@ class Cube:
         self.r = self.l
         self.l = swap
 
-        self.u.rotate2_x()
         self.u.rotate2_face()
-        self.d.rotate2_x()
         self.u.rotate2_face()
 
-    def scramble(self, scramble_move_list):
-        for scramble_move in scramble_move_list:
-            if scramble_move in move_list:
-                self.move(scramble_move)
+        self.set_edges()
+
+    def move_sequence(self, move_sequence):
+        for move in move_sequence:
+            if move in move_list:
+                self.move(move)
             else:
-                print("Invalid scramble move:", scramble_move, "\n\
+                print("Invalid move:", move, "\n\
 Valid moves:", *move_list, file=sys.stderr)
                 sys.exit(1)
 
@@ -395,22 +397,22 @@ Valid moves:", *move_list, file=sys.stderr)
                 face.face[0][1].color == color_a
                 and face.u_edge[1].color == color_b
             ):
-                return face_name, 1, 0  # up
+                return face_name, 0, 1  # up
             if (
                 face.face[1][2].color == color_a
                 and face.r_edge[1].color == color_b
             ):
-                return face_name, 2, 1  # right
+                return face_name, 1, 2  # right
             if (
                 face.face[2][1].color == color_a
                 and face.d_edge[1].color == color_b
             ):
-                return face_name, 1, 2  # down
+                return face_name, 2, 1  # down
             if (
                 face.face[1][0].color == color_a
                 and face.l_edge[1].color == color_b
             ):
-                return face_name, 0, 1  # left
+                return face_name, 1, 0  # left
         raise ValueError(f"Border ({color_a}, {color_b}) not found.")
 
     def _find_corner(self, color_a, color_b, color_c):
@@ -427,7 +429,7 @@ Valid moves:", *move_list, file=sys.stderr)
                 and face.u_edge[2].color == color_b
                 and face.r_edge[0].color == color_c
             ):
-                return face_name, 2, 0  # top-right
+                return face_name, 0, 2  # top-right
             if (
                 face.face[2][2].color == color_a
                 and face.r_edge[2].color == color_b
@@ -439,7 +441,7 @@ Valid moves:", *move_list, file=sys.stderr)
                 and face.d_edge[2].color == color_b
                 and face.l_edge[0].color == color_c
             ):
-                return face_name, 0, 2  # bottom-left
+                return face_name, 2, 0  # bottom-left
         raise ValueError(f"Corner ({color_a}, {color_b}, {color_c}) not found.")
 
     def where_is(self, color_a, color_b, color_c=None):
