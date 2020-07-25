@@ -11,6 +11,27 @@ move_list_no_dict = {
     "B": [x for x in move_list if x[0] != "B"]
 }
 
+base_move_dict = {
+    "U": "U",
+    "U'": "U'",
+    "U2": "U2",
+    "D": "D",
+    "D'": "D'",
+    "D2": "D2",
+    "R": "R",
+    "R'": "R'",
+    "R2": "R2",
+    "L": "L",
+    "L'": "L'",
+    "L2": "L2",
+    "F": "F",
+    "F'": "F'",
+    "F2": "F2",
+    "B": "B",
+    "B'": "B'",
+    "B2": "B2"
+}
+
 reverse_move_dict = {
     "U": "U'",
     "U'": "U",
@@ -94,6 +115,8 @@ x2_move_dict = {
     "B'": "F'",
     "B2": "F2"
 }
+
+move_dict_list = [base_move_dict, x_move_dict, x2_move_dict, x_prime_move_dict]
 
 class Square:
     def __init__(self, color):
@@ -285,6 +308,9 @@ class Cube:
 
         self.set_edges()
 
+        self.move_dict_list_index = 0
+        self.current_move_dict = move_dict_list[self.move_dict_list_index]
+
     def set_edges(self):
         self.u.set_edge(self.b.get_u(), self.f.get_u(), self.r.get_u(), self.l.get_u())
         self.d.set_edge(self.f.get_d(), self.b.get_d(), self.r.get_d(), self.l.get_d())
@@ -328,6 +354,9 @@ class Cube:
 
         self.set_edges()
 
+        self.move_dict_list_index = (self.move_dict_list_index + 1) % 4
+        self.current_move_dict = move_dict_list[self.move_dict_list_index]
+
     def rotate_prime_x(self):
         swap = self.f
         self.f = self.l
@@ -339,6 +368,9 @@ class Cube:
         self.d.rotate_face()
 
         self.set_edges()
+
+        self.move_dict_list_index = (self.move_dict_list_index + 4 - 1) % 4
+        self.current_move_dict = move_dict_list[self.move_dict_list_index]
 
     def rotate2_x(self):
         swap = self.f
@@ -352,6 +384,9 @@ class Cube:
         self.u.rotate2_face()
 
         self.set_edges()
+
+        self.move_dict_list_index = (self.move_dict_list_index + 2) % 4
+        self.current_move_dict = move_dict_list[self.move_dict_list_index]
 
     def move_sequence(self, move_sequence):
         for move in move_sequence:
