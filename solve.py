@@ -1,59 +1,39 @@
 import cube
 
-def place_cross_border_u(rubiks_cube, border_position, solution):
+def place_cross_border(rubiks_cube, border_position, is_first, is_last):
     switch_border_position = {
         ("u", 0, 1): ["U2", "F2"],
         ("u", 1, 2): ["U", "F2"],
         ("u", 2, 1): ["F2"],
-        ("u", 1, 0): ["U'", "F2"]
-    }
-    border_solution = switch_border_position.get(border_position)
-    rubiks_cube.move_sequence(border_solution)
-    solution += border_solution
+        ("u", 1, 0): ["U'", "F2"],
 
-def place_cross_border_d(rubiks_cube, border_position, is_first, solution):
-    switch_border_position = {
         ("d", 0, 1): [],
-        ("d", 1, 2): ["D'"] if is_first else ["R2"],
-        ("d", 2, 1): ["D2"] if is_first else ["B2"],
-        ("d", 1, 0): ["D"] if is_first else ["L2"]
-    }
-    border_solution = switch_border_position.get(border_position)
-    rubiks_cube.move_sequence(border_solution)
-    solution += border_solution
-    if not is_first and len(border_solution) > 0:
-        place_cross_border_u(rubiks_cube, ("u", 0, 1) if border_solution[0] == "B2" else ("u", border_position[1], border_position[2]), solution)
+        ("d", 1, 2): ["D'"] if is_first else ["R2", "U", "F2"],
+        ("d", 2, 1): ["D2"] if is_first else ["B2", "U2", "F2"],
+        ("d", 1, 0): ["D"] if is_first else ["L2", "U'", "F2"],
 
-def place_cross_border_xu(rubiks_cube, border_position, is_first, is_last, solution):
-    switch_border_position = {
         ("f", 0, 1): ["U'", "R'", "F"] + (["R"] if is_last else []),
         ("r", 0, 1): ["R'", "F"] + (["R"] if is_last else []),
         ("b", 0, 1): ["U", "R'", "F"] + (["R"] if is_last else []),
-        ("l", 0, 1): ["L", "F'"] + (["L'"] if not is_first else [])
+        ("l", 0, 1): ["L", "F'"] + (["L'"] if not is_first else []),
+
+        ("f", 2, 1): ["F"] + ([] if is_first else ["D'"]) + ["L", "D"],
+        ("r", 2, 1): ["R", "F"],
+        ("b", 2, 1): ["B"] + ([] if is_first else ["D"]) + ["R", "D'"],
+        ("l", 2, 1): ["L'", "F'"],
+
+        ("f", 1, 2): ([] if is_first else ["D"]) + ["R'", "D'"],
+        ("r", 1, 2): ([] if is_first else ["D2"]) + ["B'", "D2"],
+        ("b", 1, 2): ([] if is_first else ["D'"]) + ["L'", "D"],
+        ("l", 1, 2): ["F'"],
+
+        ("f", 1, 0): ([] if is_first else ["D'"]) + ["L", "D"],
+        ("r", 1, 0): ["F"],
+        ("b", 1, 0): ([] if is_first else ["D"]) + ["R", "D'"],
+        ("l", 1, 0): ([] if is_first else ["D2"]) + ["B", "D2"]
     }
-    border_solution = switch_border_position.get(border_position)
-    rubiks_cube.move_sequence(border_solution)
-    solution += border_solution
-
-def place_cross_border_xm(rubiks_cube, border_position, is_first, solution):
-    return
-
-def place_cross_border_xd(rubiks_cube, border_position, is_first, solution):
-    return
-
-def place_cross_border(rubiks_cube, border_position, is_first, is_last):
-    solution = []
-
-    if border_position[0] == "u":
-        place_cross_border_u(rubiks_cube, border_position, solution)
-    elif border_position[0] == "d":
-        place_cross_border_d(rubiks_cube, border_position, is_first, solution)
-    elif border_position[1] == 0:
-        place_cross_border_xu(rubiks_cube, border_position, is_first, is_last, solution)
-    elif border_position[1] == 1:
-        place_cross_border_xm(rubiks_cube, border_position, is_first, solution)
-    elif border_position[1] == 2:
-        place_cross_border_xd(rubiks_cube, border_position, is_first, solution)
+    solution = switch_border_position.get(border_position)
+    rubiks_cube.move_sequence(solution)
 
     return solution
 
@@ -69,14 +49,7 @@ def step_1(rubiks_cube):
     for i, border in enumerate(border_list):
         border_position = rubiks_cube.where_is(border[0], border[1])
         border_solution = place_cross_border(rubiks_cube, border_position, i == 0, i == 3)
-        if i == 0:
-            solution += border_solution
-        elif i == 1:
-            solution += [cube.x_move_dict[x] for x in border_solution]
-        elif i == 2:
-            solution += [cube.x2_move_dict[x] for x in border_solution]
-        elif i == 3:
-            solution += [cube.x_prime_move_dict[x] for x in border_solution]
+        solution += [rubiks_cube.current_move_dict[x] for x in border_solution]
         rubiks_cube.rotate_x()
 
     return solution
