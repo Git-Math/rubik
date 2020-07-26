@@ -118,12 +118,14 @@ x2_move_dict = {
 
 move_dict_list = [base_move_dict, x_move_dict, x2_move_dict, x_prime_move_dict]
 
+
 class Square:
     def __init__(self, color):
         self.color = color
 
     def __repr__(self):
         return self.color
+
 class Face:
     def __init__(self, color):
         self.face = [
@@ -285,13 +287,16 @@ class Face:
         return True
 
     def __repr__(self):
-        return f"""u_edge: {self.u_edge}
-d_edge: {self.d_edge}
-r_edge: {self.r_edge}
-l_edge: {self.l_edge}\n""" + "\n".join([
-            " ".join([square.color for square in line])
-            for line in self.face
-        ])
+        ret = "  " + " ".join([s.color for s in self.u_edge]) + "\n  - - -\n"
+        for i in range(3):
+            ret += (
+                f"{self.l_edge[i].color}|"
+                + " ".join([s.color for s in self.face[i]])
+                + f"|{self.r_edge[i].color}\n"
+            )
+        ret += "  - - -\n  " + " ".join([s.color for s in self.d_edge])
+        return ret
+
 
 class Cube:
     def __init__(self, real_cube=False):
@@ -488,13 +493,13 @@ Valid moves:", *move_list, file=sys.stderr)
 
         Returns a tuple:
         - face_name (str) where ´color_a´ was found: one of u d r l f b
-        - x (int): -
-        - y (int): the coordinates of ´color_a´ on ´face_name´
+        - y (int): -
+        - x (int): the coordinates of ´color_a´ on ´face_name´
         Raises ValueError if nothing was found.
 
         Ex:
         cube = Cube()
-        face_name, x, y = cube.where_is('g', 'y', 'r')
+        face_name, y, x = cube.where_is('g', 'y', 'r')
         print(cube.__dict__[face_name].face[y][x])
         >>>> 'g'
         """
