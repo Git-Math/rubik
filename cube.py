@@ -11,6 +11,27 @@ move_list_no_dict = {
     "B": [x for x in move_list if x[0] != "B"]
 }
 
+base_move_dict = {
+    "U": "U",
+    "U'": "U'",
+    "U2": "U2",
+    "D": "D",
+    "D'": "D'",
+    "D2": "D2",
+    "R": "R",
+    "R'": "R'",
+    "R2": "R2",
+    "L": "L",
+    "L'": "L'",
+    "L2": "L2",
+    "F": "F",
+    "F'": "F'",
+    "F2": "F2",
+    "B": "B",
+    "B'": "B'",
+    "B2": "B2"
+}
+
 reverse_move_dict = {
     "U": "U'",
     "U'": "U",
@@ -94,6 +115,8 @@ x2_move_dict = {
     "B'": "F'",
     "B2": "F2"
 }
+
+move_dict_list = [base_move_dict, x_move_dict, x2_move_dict, x_prime_move_dict]
 
 class Square:
     def __init__(self, color):
@@ -261,18 +284,15 @@ class Face:
                     return False
         return True
 
-    def print(self):
-        for line in self.face:
-            for square in line:
-                print(square.color, end=" ")
-            print()
-        print()
-
     def __repr__(self):
-        return "\n".join([
+        return f"""u_edge: {self.u_edge}
+d_edge: {self.d_edge}
+r_edge: {self.r_edge}
+l_edge: {self.l_edge}\n""" + "\n".join([
             " ".join([square.color for square in line])
             for line in self.face
         ])
+
 class Cube:
     def __init__(self, real_cube=False):
         self.u = Face("y")
@@ -286,13 +306,20 @@ class Cube:
             self.f = Face("r")
             self.b = Face("o")
 
+        self.set_edges()
+
+        self.move_dict_list_index = 0
+        self.current_move_dict = move_dict_list[self.move_dict_list_index]
+
+    def set_edges(self):
         self.u.set_edge(self.b.get_u(), self.f.get_u(), self.r.get_u(), self.l.get_u())
-        self.d.set_edge(self.f.get_d(), self.b.get_d(), self.l.get_d(), self.r.get_d())
+        self.d.set_edge(self.f.get_d(), self.b.get_d(), self.r.get_d(), self.l.get_d())
         self.r.set_edge(self.u.get_r(), self.d.get_r(), self.b.get_l(), self.f.get_r())
         self.l.set_edge(self.u.get_l(), self.d.get_l(), self.f.get_l(), self.b.get_r())
         self.f.set_edge(self.u.get_d(), self.d.get_u(), self.r.get_l(), self.l.get_r())
         self.b.set_edge(self.u.get_u(), self.d.get_d(), self.l.get_l(), self.r.get_r())
 
+    def move(self, m):
         self.switch_move = {
             "U": self.u.rotate,
             "U'": self.u.rotate_prime,
@@ -313,8 +340,6 @@ class Cube:
             "B'": self.b.rotate_prime,
             "B2": self.b.rotate2
         }
-
-    def move(self, m):
         self.switch_move.get(m)()
 
     def rotate_x(self):
@@ -324,10 +349,13 @@ class Cube:
         self.b = self.l
         self.l = swap
 
-        self.u.rotate_x()
         self.u.rotate_face()
-        self.d.rotate_x()
         self.d.rotate_prime_face()
+
+        self.set_edges()
+
+        self.move_dict_list_index = (self.move_dict_list_index + 1) % 4
+        self.current_move_dict = move_dict_list[self.move_dict_list_index]
 
     def rotate_prime_x(self):
         swap = self.f
@@ -336,10 +364,13 @@ class Cube:
         self.b = self.r
         self.r = swap
 
-        self.u.rotate_prime_x()
         self.u.rotate_prime_face()
-        self.d.rotate_prime_x()
         self.d.rotate_face()
+
+        self.set_edges()
+
+        self.move_dict_list_index = (self.move_dict_list_index + 4 - 1) % 4
+        self.current_move_dict = move_dict_list[self.move_dict_list_index]
 
     def rotate2_x(self):
         swap = self.f
@@ -349,17 +380,20 @@ class Cube:
         self.r = self.l
         self.l = swap
 
-        self.u.rotate2_x()
         self.u.rotate2_face()
-        self.d.rotate2_x()
         self.u.rotate2_face()
 
-    def scramble(self, scramble_move_list):
-        for scramble_move in scramble_move_list:
-            if scramble_move in move_list:
-                self.move(scramble_move)
+        self.set_edges()
+
+        self.move_dict_list_index = (self.move_dict_list_index + 2) % 4
+        self.current_move_dict = move_dict_list[self.move_dict_list_index]
+
+    def move_sequence(self, move_sequence):
+        for move in move_sequence:
+            if move in move_list:
+                self.move(move)
             else:
-                print("Invalid scramble move:", scramble_move, "\n\
+                print("Invalid move:", move, "\n\
 Valid moves:", *move_list, file=sys.stderr)
                 sys.exit(1)
 
@@ -391,20 +425,86 @@ Valid moves:", *move_list, file=sys.stderr)
             self.move(reverse_move_dict[move])
         return False, []
 
-    def print(self):
-        print("U:")
-        self.u.print()
-        print("D:")
-        self.d.print()
-        print("R:")
-        self.r.print()
-        print("L:")
-        self.l.print()
-        print("F:")
-        self.f.print()
-        print("B:")
-        self.b.print()
-        print("################################")
+    def _find_border(self, color_a, color_b):
+        for face_name in 'udrlfb':
+            face = self.__dict__[face_name]
+            if (
+                face.face[0][1].color == color_a
+                and face.u_edge[1].color == color_b
+            ):
+                return face_name, 0, 1  # up
+            if (
+                face.face[1][2].color == color_a
+                and face.r_edge[1].color == color_b
+            ):
+                return face_name, 1, 2  # right
+            if (
+                face.face[2][1].color == color_a
+                and face.d_edge[1].color == color_b
+            ):
+                return face_name, 2, 1  # down
+            if (
+                face.face[1][0].color == color_a
+                and face.l_edge[1].color == color_b
+            ):
+                return face_name, 1, 0  # left
+        raise ValueError(f"Border ({color_a}, {color_b}) not found.")
+
+    def _find_corner(self, color_a, color_b, color_c):
+        for face_name in 'udrlfb':
+            face = self.__dict__[face_name]
+            if (
+                face.face[0][0].color == color_a
+                and face.l_edge[2].color == color_b
+                and face.u_edge[0].color == color_c
+            ):
+                return face_name, 0, 0  # top-left
+            if (
+                face.face[0][2].color == color_a
+                and face.u_edge[2].color == color_b
+                and face.r_edge[0].color == color_c
+            ):
+                return face_name, 0, 2  # top-right
+            if (
+                face.face[2][2].color == color_a
+                and face.r_edge[2].color == color_b
+                and face.d_edge[0].color == color_c
+            ):
+                return face_name, 2, 2  # bottom-right
+            if (
+                face.face[2][0].color == color_a
+                and face.d_edge[2].color == color_b
+                and face.l_edge[0].color == color_c
+            ):
+                return face_name, 2, 0  # bottom-left
+        raise ValueError(f"Corner ({color_a}, {color_b}, {color_c}) not found.")
+
+    def where_is(self, color_a, color_b, color_c=None):
+        """
+        Find a border coresponding to the given color.
+        The color format is assumed to be the same as ´Square.color´.
+        Fill only the ´color_a´ and ´color_b´ if you want to find a border,
+        otherwise if you want to find a corner also fill ´color_c´.
+
+        Returns a tuple:
+        - face_name (str) where ´color_a´ was found: one of u d r l f b
+        - x (int): -
+        - y (int): the coordinates of ´color_a´ on ´face_name´
+        Raises ValueError if nothing was found.
+
+        Ex:
+        cube = Cube()
+        face_name, x, y = cube.where_is('g', 'y', 'r')
+        print(cube.__dict__[face_name].face[y][x])
+        >>>> 'g'
+        """
+        if color_c is None:
+            return self._find_border(color_a, color_b)
+        try:
+            return self._find_corner(color_a, color_b, color_c)
+        except ValueError:
+            # in case the corner's colors are in an impossible order
+            return self._find_corner(color_a, color_c, color_b)
 
     def __repr__(self):
         return f"""U:
