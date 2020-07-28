@@ -297,14 +297,14 @@ class Cube:
     def __init__(self, real_cube=False):
         self.u = Face("y")
         self.d = Face("w")
-        self.r = Face("g")
-        self.l = Face("b")
+        self.r = Face("r")
+        self.l = Face("o")
         if real_cube:
-            self.f = Face("o")
-            self.b = Face("r")
+            self.f = Face("g")
+            self.b = Face("b")
         else:
-            self.f = Face("r")
-            self.b = Face("o")
+            self.f = Face("b")
+            self.b = Face("g")
 
         self.set_edges()
 
