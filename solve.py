@@ -485,7 +485,7 @@ b|X b b|X
     }
 
     cube_repr = f"\n{rubiks_cube.b}"
-    for color in "ywrogb ":
+    for color in "ywrogb":
         if color == rubiks_cube.b.face[1][1].color:
             continue
         cube_repr = cube_repr.replace(color, "X")
