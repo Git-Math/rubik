@@ -181,7 +181,7 @@ def prepare_two_layers_corner_border(rubiks_cube, corner_border):
     return solution
 
 def place_two_layers_corner_border(rubiks_cube, corner_border):
-    solution = prepare_two_layers_corner_border(rubiks_cube, corner_border)
+    solution = []
 
     corner_position = rubiks_cube.where_is(corner_border[0][0], corner_border[0][1], corner_border[0][2])
     border_position = rubiks_cube.where_is(corner_border[1][0], corner_border[1][1])
@@ -260,7 +260,7 @@ def step_1(rubiks_cube):
     return solution
 
 def step_2(rubiks_cube):
-    solution =[]
+    solution = []
     corner_border_list = [
         [
             (rubiks_cube.d.face[1][1].color, rubiks_cube.f.face[1][1].color, rubiks_cube.r.face[1][1].color),
@@ -280,10 +280,26 @@ def step_2(rubiks_cube):
         ]
     ]
 
-    for corner_border in corner_border_list:
-        two_layers_corner_border_solution = place_two_layers_corner_border(rubiks_cube, corner_border)
-        solution += [rubiks_cube.current_move_dict[x] for x in two_layers_corner_border_solution]
-        rubiks_cube.rotate_x()
+    corner_border_placed = 0
+    while corner_border_placed < 4:
+        corner_border_found = False
+        for corner_border in corner_border_list:
+            two_layers_corner_border_solution = place_two_layers_corner_border(rubiks_cube, corner_border)
+            if two_layers_corner_border_solution:
+                corner_border_placed += 1
+                corner_border_found = True
+            solution += [rubiks_cube.current_move_dict[x] for x in two_layers_corner_border_solution]
+            rubiks_cube.rotate_x()
+        if not corner_border_found:
+            for corner_border in corner_border_list:
+                if not corner_border_found:
+                    two_layers_corner_border_solution = prepare_two_layers_corner_border(rubiks_cube, corner_border)
+                    two_layers_corner_border_solution += place_two_layers_corner_border(rubiks_cube, corner_border)
+                    if two_layers_corner_border_solution:
+                        corner_border_placed += 1
+                        corner_border_found = True
+                    solution += [rubiks_cube.current_move_dict[x] for x in two_layers_corner_border_solution]
+                rubiks_cube.rotate_x()
 
     return solution
 
