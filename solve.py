@@ -1,5 +1,7 @@
 import cube
 
+
+# STEP 1
 def place_cross_border(rubiks_cube, border_position, is_first, is_last):
     switch_border_position = {
         ("u", 0, 1): ["U2", "F2"],
@@ -37,6 +39,26 @@ def place_cross_border(rubiks_cube, border_position, is_first, is_last):
 
     return solution
 
+
+def step_1(rubiks_cube):
+    solution = []
+    border_list = [
+        (rubiks_cube.d.face[1][1].color, rubiks_cube.f.face[1][1].color),
+        (rubiks_cube.d.face[1][1].color, rubiks_cube.r.face[1][1].color),
+        (rubiks_cube.d.face[1][1].color, rubiks_cube.b.face[1][1].color),
+        (rubiks_cube.d.face[1][1].color, rubiks_cube.l.face[1][1].color)
+    ]
+
+    for i, border in enumerate(border_list):
+        border_position = rubiks_cube.where_is(border[0], border[1])
+        cross_solution = place_cross_border(rubiks_cube, border_position, i == 0, i == 3)
+        solution += [rubiks_cube.current_move_dict[x] for x in cross_solution]
+        rubiks_cube.rotate_x()
+
+    return solution
+
+
+# STEP 2
 def is_border_fu(border_position):
     if (
         border_position == ("f", 0, 1)
@@ -44,6 +66,7 @@ def is_border_fu(border_position):
     ):
         return True
     return False
+
 
 def is_border_ru(border_position):
     if (
@@ -53,6 +76,7 @@ def is_border_ru(border_position):
         return True
     return False
 
+
 def is_border_bu(border_position):
     if (
         border_position == ("b", 0, 1)
@@ -60,6 +84,7 @@ def is_border_bu(border_position):
     ):
         return True
     return False
+
 
 def is_border_lu(border_position):
     if (
@@ -69,14 +94,16 @@ def is_border_lu(border_position):
         return True
     return False
 
+
 def is_corner_fur(corner_position):
     if (
         corner_position == ("f", 0, 2)
         or corner_position == ("u", 2, 2)
         or corner_position == ("r", 0, 0)
-        ):
+    ):
         return True
     return False
+
 
 def is_corner_rur(corner_position):
     if (
@@ -87,6 +114,7 @@ def is_corner_rur(corner_position):
         return True
     return False
 
+
 def is_corner_bur(corner_position):
     if (
         corner_position == ("b", 0, 2)
@@ -95,6 +123,7 @@ def is_corner_bur(corner_position):
     ):
         return True
     return False
+
 
 def is_corner_lur(corner_position):
     if (
@@ -105,6 +134,7 @@ def is_corner_lur(corner_position):
         return True
     return False
 
+
 def is_corner_fdr(corner_position):
     if (
         corner_position == ("f", 2, 2)
@@ -113,6 +143,7 @@ def is_corner_fdr(corner_position):
     ):
         return True
     return False
+
 
 def prepare_two_layers_corner_border(rubiks_cube, corner_border):
     solution = []
@@ -180,6 +211,7 @@ def prepare_two_layers_corner_border(rubiks_cube, corner_border):
 
     return solution
 
+
 def place_two_layers_corner_border(rubiks_cube, corner_border):
     solution = prepare_two_layers_corner_border(rubiks_cube, corner_border)
 
@@ -242,22 +274,6 @@ def place_two_layers_corner_border(rubiks_cube, corner_border):
 
     return solution
 
-def step_1(rubiks_cube):
-    solution = []
-    border_list = [
-        (rubiks_cube.d.face[1][1].color, rubiks_cube.f.face[1][1].color),
-        (rubiks_cube.d.face[1][1].color, rubiks_cube.r.face[1][1].color),
-        (rubiks_cube.d.face[1][1].color, rubiks_cube.b.face[1][1].color),
-        (rubiks_cube.d.face[1][1].color, rubiks_cube.l.face[1][1].color)
-    ]
-
-    for i, border in enumerate(border_list):
-        border_position = rubiks_cube.where_is(border[0], border[1])
-        cross_solution = place_cross_border(rubiks_cube, border_position, i == 0, i == 3)
-        solution += [rubiks_cube.current_move_dict[x] for x in cross_solution]
-        rubiks_cube.rotate_x()
-
-    return solution
 
 def step_2(rubiks_cube):
     solution =[]
@@ -290,9 +306,13 @@ def step_2(rubiks_cube):
 def step_3(rubiks_cube):
     return []
 
+# STEP 3
+# STEP 4
 def step_4(rubiks_cube):
     return []
 
+
+# SOLVE ENTRY POINT
 def solve(rubiks_cube):
     solution = []
     step = []
