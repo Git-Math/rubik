@@ -25,6 +25,7 @@ if __name__ == '__main__':
 
     rubiks_cube = cube.Cube()
     rubiks_cube.move_sequence(scramble_move_list)
+    print("scramble: ", *scramble_move_list, sep = " ")
 
     if rubiks_cube.is_solved():
         print("This rubik's cube is already solved")
@@ -38,5 +39,6 @@ if __name__ == '__main__':
         #sys.exit(0)
 
     solution, step = solve.solve(rubiks_cube)
+    print("\nsolution: ", *solution, sep=" ")
     rubiks_cube.reverse_solution(solution)
-    print_cube.print_cube(rubiks_cube, solution, None)
+    print_cube.print_cube(rubiks_cube, solution, step)
