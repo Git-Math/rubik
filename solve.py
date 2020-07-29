@@ -303,10 +303,197 @@ def step_2(rubiks_cube):
 
     return solution
 
-def step_3(rubiks_cube):
-    return []
 
 # STEP 3
+def step_3(rubiks_cube):
+    algo_dic = {
+        # DOT
+        """
+  X b X
+  - - -
+b|X X X|b
+b|X b X|b
+b|X X X|b
+  - - -
+  X b X""": ["R", "U", "B'", "l", "U", "l2'", "x'", "U'", "R'", "F", "R", "F'"],
+
+        """
+  X b X
+  - - -
+b|X X X|b
+b|X b X|b
+X|X X X|X
+  - - -
+  b b b""": ["R'", "F", "R", "F'", "U2", "R'", "F", "R", "y'", "R2", "U2", "R"],
+
+        """
+  b b X
+  - - -
+X|X X X|b
+b|X b X|b
+b|X X b|X
+  - - -
+  X b X""": ["y", "L'", "R2", "B", "R'", "B", "L", "U2'", "L'", "B", "M'"],
+
+        """
+  X b X
+  - - -
+b|X X b|X
+b|X b X|b
+X|X X X|b
+  - - -
+  b b X""": ["R'", "U2", "x", "R'", "U", "R", "U'", "y", "R'", "U'", "R'", "U", "R'", "F"],
+
+        """
+  X b b
+  - - -
+X|b X X|X
+b|X b X|b
+b|X X b|X
+  - - -
+  X b X""": ["R", "U", "R'", "U", "R'", "F", "R", "F'", "U2", "R'", "F", "R", "F'"],
+
+        """
+  X b X
+  - - -
+X|b X b|X
+b|X b X|b
+X|b X b|X
+  - - -
+  X b X""": ["M'", "U2", "M", "U2", "M'", "U", "M", "U2", "M'", "U2", "M"],
+
+        """
+  X b X
+  - - -
+X|b X b|X
+b|X b X|b
+b|X X X|b
+  - - -
+  X b X""": ["R'", "U2", "F", "R", "U", "R'", "U'", "y'", "R2", "U2", "x'", "R", "U"],
+
+        """
+  b b b
+  - - -
+X|X X X|X
+b|X b X|b
+X|b X b|X
+  - - -
+  X b X""": ["F", "R", "U", "R'", "U", "y'", "R'", "U2", "R'", "F", "R", "F'"],
+
+        # LINE
+        """
+  b X X
+  - - -
+X|X b X|b
+b|X b X|b
+X|X b X|b
+  - - -
+  b X X""": ["R'", "U'", "y", "L'", "U", "L'", "y'", "L", "F", "L'", "F", "R"],
+
+        """
+  X X X
+  - - -
+b|X b X|b
+b|X b X|b
+b|X b X|b
+  - - -
+  X X X""": ["R", "U'", "y", "R2", "D", "R'", "U2", "R", "D'", "R2", "d", "R'"],
+
+        """
+  b b X
+  - - -
+X|X X X|b
+X|b b b|X
+X|X X X|b
+  - - -
+  b b X""": ["F", "U", "R", "U'", "R'", "U", "R", "U'", "R'", "F'"],
+
+        """
+  X b X
+  - - -
+b|X X X|b
+X|b b b|X
+b|X X X|b
+  - - -
+  X b X""": ["L'", "B'", "L", "U'", "R'", "U", "R", "U'", "R'", "U", "R", "L'", "B", "L"],
+
+        # CROSS
+        """
+  b X X
+  - - -
+X|X b X|b
+X|b b b|X
+X|X b X|b
+  - - -
+  b X X""": ["L", "U'", "R'", "U", "L'", "U", "R", "U", "R'", "U", "R"],
+
+        """
+  X X X
+  - - -
+b|X b X|b
+X|b b b|X
+b|X b X|b
+  - - -
+  X X X""": ["R", "U", "R'", "U", "R", "U'", "R'", "U", "R", "U2", "R'"],
+
+        """
+  X X b
+  - - -
+b|X b X|X
+X|b b b|X
+X|X b b|X
+  - - -
+  b X X""": ["L'", "U", "R", "U'", "L", "U", "R'"],
+
+        """
+  b X X
+  - - -
+X|X b X|b
+X|b b b|X
+b|X b b|X
+  - - -
+  X X X""": ["R'", "U2", "R", "U", "R'", "U", "R"],
+
+        """
+  X X b
+  - - -
+X|b b X|X
+X|b b b|X
+X|b b X|X
+  - - -
+  X X b""": ["R'", "F'", "L", "F", "R", "F'", "L'", "F"],
+
+        """
+  X X X
+  - - -
+X|b b b|X
+X|b b b|X
+X|X b X|X
+  - - -
+  b X b""": ["R2", "D", "R'", "U2", "R", "D'", "R'", "U2", "R'"],
+
+        """
+  X X b
+  - - -
+X|b b X|X
+X|b b b|X
+b|X b b|X
+  - - -
+  X X X""": ["R'", "F'", "L'", "F", "R", "F'", "L", "F"],
+
+
+    }
+
+    cube_repr = f"\n{rubiks_cube.b}"
+    for color in "ywrogb ":
+        if color == rubiks_cube.b.face[1][1].color:
+            continue
+        cube_repr = cube_repr.replace(color, "X")
+
+    # TODO: rotate 3 times...
+    return algo_dic[cube_repr]
+
+
 # STEP 4
 def step_4(rubiks_cube):
     return []
