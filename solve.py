@@ -484,11 +484,13 @@ b|X b b|X
 
     }
 
+    back_color = rubiks_cube.b.face[1][1].color
     cube_repr = f"\n{rubiks_cube.b}"
     for color in "ywrogb":
-        if color == rubiks_cube.b.face[1][1].color:
+        if color == back_color:
             continue
         cube_repr = cube_repr.replace(color, "X")
+    cube_repr = cube_repr.replace(back_color, "b")
 
     # TODO: rotate 3 times...
     return algo_dic[cube_repr]
