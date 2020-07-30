@@ -40,5 +40,6 @@ if __name__ == '__main__':
 
     solution, step = solve.solve(rubiks_cube)
     print("\nsolution: ", *solution, sep=" ")
+    print(f"solution move number: {len(solution)}")
     rubiks_cube.reverse_solution(solution)
     print_cube.print_cube(rubiks_cube, solution, step)
