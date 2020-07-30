@@ -837,6 +837,62 @@ X|O X X|O
   X O X""": ["L", "F'", "L'", "U'", "L", "U", "y'", "R", "d'", "L'"],
     }
 
+    def rotate_repr(src):
+        """
+        Rotate 90° clockwise:
+  a b c
+  - - -
+l|m n o|d
+k|t u p|e
+j|s r q|f
+  - - -
+  i h g
+        """
+        dst = list(src)
+        (
+            a, b, c,
+            d, e, f,
+            g, h, i,
+            j, k, l,
+            m, n, o, p,
+            q, r, s, t
+        ) = (
+            3, 5, 7,
+            25, 35, 45,
+            61, 59, 57,
+            37, 27, 17,
+            19, 21, 23, 33,
+            43, 41, 39, 29
+        )
+
+        dst[a] = src[j]
+        dst[b] = src[k]
+        dst[c] = src[l]
+
+        dst[d] = src[a]
+        dst[e] = src[b]
+        dst[f] = src[c]
+
+        dst[g] = src[d]
+        dst[h] = src[e]
+        dst[i] = src[f]
+
+        dst[j] = src[g]
+        dst[k] = src[h]
+        dst[l] = src[i]
+
+        dst[m] = src[s]
+        dst[n] = src[t]
+        dst[o] = src[m]
+        dst[p] = src[n]
+
+        dst[q] = src[o]
+        dst[r] = src[p]
+        dst[s] = src[q]
+        dst[t] = src[r]
+
+        return "".join(dst)
+
     back_color = rubiks_cube.b.face[1][1].color
     cube_repr = f"\n{rubiks_cube.b}"
     for color in "ywrogb":
@@ -845,8 +901,16 @@ X|O X X|O
         cube_repr = cube_repr.replace(color, "X")
     cube_repr = cube_repr.replace(back_color, "O")
 
-    # TODO: rotate 3 times...
-    return algo_dic[cube_repr]
+    for i in range(3):
+        try:
+            return algo_dic[cube_repr]
+        except KeyError:
+            cube_repr = rotate_repr(cube_repr)
+    raise ValueError(
+        "Error: step 3 can't be solved. "
+        "Proceeding to smash the cube into a wall... "
+        "*BOOOM* ... Recovery successful!"
+    )
 
 
 # STEP 4
@@ -864,21 +928,3 @@ def solve(rubiks_cube):
         step.append(len(solution))
 
     return solution, step
-
-
-# TEST AREA
-if __name__ == '__main__':
-    import random
-
-    c = cube.Cube(real_cube=True)
-    print(c)
-
-    moves = cube.move_list * 10
-    random.shuffle(moves)
-    moves = moves[:5]
-    print("Moves:", moves)
-    c.move_sequence(moves)
-    print(c)
-
-    solution, step = solve(c)
-    print(solution, step)
