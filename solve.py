@@ -309,179 +309,532 @@ def step_3(rubiks_cube):
     algo_dic = {
         # DOT
         """
-  X b X
+  X O X
   - - -
-b|X X X|b
-b|X b X|b
-b|X X X|b
+O|X X X|O
+O|X O X|O
+O|X X X|O
   - - -
-  X b X""": ["R", "U", "B'", "l", "U", "l2'", "x'", "U'", "R'", "F", "R", "F'"],
+  X O X""": ["R", "U", "B'", "l", "U", "l2'", "x'", "U'", "R'", "F", "R", "F'"],
 
         """
-  X b X
+  X O X
   - - -
-b|X X X|b
-b|X b X|b
+O|X X X|O
+O|X O X|O
 X|X X X|X
   - - -
-  b b b""": ["R'", "F", "R", "F'", "U2", "R'", "F", "R", "y'", "R2", "U2", "R"],
+  O O O""": ["R'", "F", "R", "F'", "U2", "R'", "F", "R", "y'", "R2", "U2", "R"],
 
         """
-  b b X
+  O O X
   - - -
-X|X X X|b
-b|X b X|b
-b|X X b|X
+X|X X X|O
+O|X O X|O
+O|X X O|X
   - - -
-  X b X""": ["y", "L'", "R2", "B", "R'", "B", "L", "U2'", "L'", "B", "M'"],
+  X O X""": ["y", "L'", "R2", "B", "R'", "B", "L", "U2'", "L'", "B", "M'"],
 
         """
-  X b X
+  X O X
   - - -
-b|X X b|X
-b|X b X|b
-X|X X X|b
+O|X X O|X
+O|X O X|O
+X|X X X|O
   - - -
-  b b X""": ["R'", "U2", "x", "R'", "U", "R", "U'", "y", "R'", "U'", "R'", "U", "R'", "F"],
+  O O X""": ["R'", "U2", "x", "R'", "U", "R", "U'", "y", "R'", "U'", "R'", "U", "R'", "F"],
 
         """
-  X b b
+  X O O
   - - -
-X|b X X|X
-b|X b X|b
-b|X X b|X
+X|O X X|X
+O|X O X|O
+O|X X O|X
   - - -
-  X b X""": ["R", "U", "R'", "U", "R'", "F", "R", "F'", "U2", "R'", "F", "R", "F'"],
+  X O X""": ["R", "U", "R'", "U", "R'", "F", "R", "F'", "U2", "R'", "F", "R", "F'"],
 
         """
-  X b X
+  X O X
   - - -
-X|b X b|X
-b|X b X|b
-X|b X b|X
+X|O X O|X
+O|X O X|O
+X|O X O|X
   - - -
-  X b X""": ["M'", "U2", "M", "U2", "M'", "U", "M", "U2", "M'", "U2", "M"],
+  X O X""": ["M'", "U2", "M", "U2", "M'", "U", "M", "U2", "M'", "U2", "M"],
 
         """
-  X b X
+  X O X
   - - -
-X|b X b|X
-b|X b X|b
-b|X X X|b
+X|O X O|X
+O|X O X|O
+O|X X X|O
   - - -
-  X b X""": ["R'", "U2", "F", "R", "U", "R'", "U'", "y'", "R2", "U2", "x'", "R", "U"],
+  X O X""": ["R'", "U2", "F", "R", "U", "R'", "U'", "y'", "R2", "U2", "x'", "R", "U"],
 
         """
-  b b b
+  O O O
   - - -
 X|X X X|X
-b|X b X|b
-X|b X b|X
+O|X O X|O
+X|O X O|X
   - - -
-  X b X""": ["F", "R", "U", "R'", "U", "y'", "R'", "U2", "R'", "F", "R", "F'"],
+  X O X""": ["F", "R", "U", "R'", "U", "y'", "R'", "U2", "R'", "F", "R", "F'"],
 
         # LINE
         """
-  b X X
+  O X X
   - - -
-X|X b X|b
-b|X b X|b
-X|X b X|b
+X|X O X|O
+O|X O X|O
+X|X O X|O
   - - -
-  b X X""": ["R'", "U'", "y", "L'", "U", "L'", "y'", "L", "F", "L'", "F", "R"],
+  O X X""": ["R'", "U'", "y", "L'", "U", "L'", "y'", "L", "F", "L'", "F", "R"],
 
         """
   X X X
   - - -
-b|X b X|b
-b|X b X|b
-b|X b X|b
+O|X O X|O
+O|X O X|O
+O|X O X|O
   - - -
   X X X""": ["R", "U'", "y", "R2", "D", "R'", "U2", "R", "D'", "R2", "d", "R'"],
 
         """
-  b b X
+  O O X
   - - -
-X|X X X|b
-X|b b b|X
-X|X X X|b
+X|X X X|O
+X|O O O|X
+X|X X X|O
   - - -
-  b b X""": ["F", "U", "R", "U'", "R'", "U", "R", "U'", "R'", "F'"],
+  O O X""": ["F", "U", "R", "U'", "R'", "U", "R", "U'", "R'", "F'"],
 
         """
-  X b X
+  X O X
   - - -
-b|X X X|b
-X|b b b|X
-b|X X X|b
+O|X X X|O
+X|O O O|X
+O|X X X|O
   - - -
-  X b X""": ["L'", "B'", "L", "U'", "R'", "U", "R", "U'", "R'", "U", "R", "L'", "B", "L"],
+  X O X""": ["L'", "B'", "L", "U'", "R'", "U", "R", "U'", "R'", "U", "R", "L'", "B", "L"],
 
         # CROSS
         """
-  b X X
+  O X X
   - - -
-X|X b X|b
-X|b b b|X
-X|X b X|b
+X|X O X|O
+X|O O O|X
+X|X O X|O
   - - -
-  b X X""": ["L", "U'", "R'", "U", "L'", "U", "R", "U", "R'", "U", "R"],
+  O X X""": ["L", "U'", "R'", "U", "L'", "U", "R", "U", "R'", "U", "R"],
 
         """
   X X X
   - - -
-b|X b X|b
-X|b b b|X
-b|X b X|b
+O|X O X|O
+X|O O O|X
+O|X O X|O
   - - -
   X X X""": ["R", "U", "R'", "U", "R", "U'", "R'", "U", "R", "U2", "R'"],
 
         """
-  X X b
+  X X O
   - - -
-b|X b X|X
-X|b b b|X
-X|X b b|X
+O|X O X|X
+X|O O O|X
+X|X O O|X
   - - -
-  b X X""": ["L'", "U", "R", "U'", "L", "U", "R'"],
+  O X X""": ["L'", "U", "R", "U'", "L", "U", "R'"],
 
         """
-  b X X
+  O X X
   - - -
-X|X b X|b
-X|b b b|X
-b|X b b|X
+X|X O X|O
+X|O O O|X
+O|X O O|X
   - - -
   X X X""": ["R'", "U2", "R", "U", "R'", "U", "R"],
 
         """
-  X X b
+  X X O
   - - -
-X|b b X|X
-X|b b b|X
-X|b b X|X
+X|O O X|X
+X|O O O|X
+X|O O X|X
   - - -
-  X X b""": ["R'", "F'", "L", "F", "R", "F'", "L'", "F"],
+  X X O""": ["R'", "F'", "L", "F", "R", "F'", "L'", "F"],
 
         """
   X X X
   - - -
-X|b b b|X
-X|b b b|X
-X|X b X|X
+X|O O O|X
+X|O O O|X
+X|X O X|X
   - - -
-  b X b""": ["R2", "D", "R'", "U2", "R", "D'", "R'", "U2", "R'"],
+  O X O""": ["R2", "D", "R'", "U2", "R", "D'", "R'", "U2", "R'"],
 
         """
-  X X b
+  X X O
   - - -
-X|b b X|X
-X|b b b|X
-b|X b b|X
+X|O O X|X
+X|O O O|X
+O|X O O|X
   - - -
   X X X""": ["R'", "F'", "L'", "F", "R", "F'", "L", "F"],
 
+        # 4 CORNERS
+        """
+  X O X
+  - - -
+X|O X O|X
+X|O O X|O
+X|O O O|X
+  - - -
+  X X X""": ["M'", "U'", "M", "U2'", "M'", "U'", "M"],
 
+        """
+  X O X
+  - - -
+X|O X O|X
+X|O O O|X
+X|O X O|X
+  - - -
+  X O X""": ["L'", "R", "U", "R'", "U'", "L", "R'", "F", "R", "F'"],
+
+        # SHAPE _|
+        """
+  O X X
+  - - -
+X|X O X|O
+X|O O X|O
+X|O X X|X
+  - - -
+  X O O""": ["L", "F", "R'", "F", "R", "F2", "L'"],
+
+        """
+  X X X
+  - - -
+X|O O X|O
+X|O O X|O
+X|X X O|X
+  - - -
+  O O X""": ["F", "R'", "F'", "R", "U", "R", "U'", "R'"],
+
+        """
+  X X O
+  - - -
+O|X O X|X
+X|O O X|O
+X|X X O|X
+  - - -
+  O O X""": ["R'", "U'", "R", "y'", "x'", "R", "U'", "R'", "F", "R", "U", "R'"],
+
+        """
+  O X O
+  - - -
+X|X O X|X
+X|O O X|O
+X|O X O|X
+  - - -
+  X O X""": ["U'", "R", "U2'", "R'", "U'", "R", "U'", "R2", "y'", "R'", "U'", "R", "U", "B"],
+
+        """
+  X X O
+  - - -
+O|X O X|X
+X|O O X|O
+O|X X X|X
+  - - -
+  X O O""": ["F", "R", "U", "R'", "U'", "R", "U", "R'", "U'", "F'"],
+
+        """
+  O X O
+  - - -
+X|X O X|X
+X|O O X|O
+X|X X X|X
+  - - -
+  O O O""": ["L", "F'", "L'", "F", "U2", "L2", "y'", "L", "F", "L'", "F"],
+
+        # SHAPE |_
+        """
+  O X O
+  - - -
+X|X O X|X
+O|X O O|X
+X|O X O|X
+  - - -
+  X O X""": ["U'", "R'", "U2", "R", "U", "R'", "U", "R2", "y", "R", "U", "R'", "U'", "F'"],
+
+        """
+  X X X
+  - - -
+O|X O O|X
+O|X O O|X
+X|X X X|O
+  - - -
+  O O X""": ["r", "U2", "R'", "U'", "R", "U'", "r'"],
+
+        """
+  O X X
+  - - -
+X|X O O|X
+O|X O O|X
+X|O X X|O
+  - - -
+  X O X""": ["R'", "U2", "l", "R", "U'", "R'", "U", "l'", "U2", "R"],
+
+        """
+  O X X
+  - - -
+X|X O X|O
+O|X O O|X
+X|X X X|O
+  - - -
+  O O X""": ["F'", "L'", "U'", "L", "U", "L'", "U'", "L", "U", "F"],
+
+        """
+  X X O
+  - - -
+O|X O X|X
+O|X O O|X
+O|X X X|X
+  - - -
+  X O O""": ["R'", "F", "R'", "F'", "R2", "U2", "x'", "U'", "R", "U", "R'"],
+
+        """
+  O X O
+  - - -
+X|X O X|X
+O|X O O|X
+X|X X X|X
+  - - -
+  O O O""": ["R'", "F", "R", "F'", "U2", "R2", "y", "R'", "F'", "R", "F'"],
+
+        # SHAPE ¯|
+        """
+  O O X
+  - - -
+X|X X O|X
+X|O O X|O
+O|X O X|X
+  - - -
+  X X O""": ["R", "U", "R'", "y", "R'", "F", "R", "U'", "R'", "F'", "R"],
+
+        """
+  X O O
+  - - -
+X|O X X|X
+X|O O X|O
+X|X O X|O
+  - - -
+  O X X""": ["L'", "B'", "L", "U'", "R'", "U", "R", "L'", "B", "L"],
+
+        """
+  X O O
+  - - -
+O|X X X|X
+X|O O X|O
+X|X O O|X
+  - - -
+  O X X""": ["U2", "r", "R2'", "U'", "R", "U'", "R'", "U2", "R", "U'", "M"],
+
+        """
+  X O X
+  - - -
+X|O X O|X
+X|O O X|O
+O|X O X|O
+  - - -
+  X X X""": ["x'", "U'", "R", "U'", "R2'", "F", "x", "R", "U", "R'", "U'", "R", "B2"],
+
+        # SHAPE |¯
+        """
+  X O O
+  - - -
+O|X X X|X
+O|X O O|X
+O|X O X|X
+  - - -
+  X X O""": ["L", "U'", "y'", "R'", "U2'", "R'", "U", "R", "U'", "R", "U2", "R", "d'", "L'"],
+
+        """
+  O O X
+  - - -
+X|X X X|O
+O|X O O|X
+X|O O X|X
+  - - -
+  X X O""": ["U2", "l'", "L2", "U", "L'", "U", "L", "U2", "L'", "U", "M"],
+
+        """
+  X O X
+  - - -
+X|O X O|X
+O|X O O|X
+O|X O X|O
+  - - -
+  X X X""": ["R2'", "U", "R'", "B'", "R", "U'", "R2'", "U", "l", "U", "l'"],
+
+        """
+  O O X
+  - - -
+X|X X X|O
+O|X O O|X
+O|X O O|X
+  - - -
+  X X X""": ["r'", "U2", "R", "U", "R'", "U", "r"],
+
+        # C
+        """
+  X X X
+  - - -
+X|O O X|O
+O|X O X|O
+X|O O X|O
+  - - -
+  X X X""": ["R", "U", "x'", "R", "U'", "R'", "U", "x", "U'", "R'"],
+
+        """
+  X O X
+  - - -
+O|X X X|O
+X|O O O|X
+X|O X O|X
+  - - -
+  X O X""": ["R", "U", "R'", "U'", "x", "D'", "R'", "U", "R", "E'"],
+
+
+        # L
+        """
+  X O O
+  - - -
+O|X X X|X
+X|O O O|X
+X|X X O|X
+  - - -
+  O O X""": ["R'", "F", "R", "U", "R'", "F'", "R", "y", "L", "U'", "L'"],
+
+        """
+  O O X
+  - - -
+X|X X X|O
+X|O O O|X
+X|O X X|X
+  - - -
+  X O O""": ["L", "F'", "L'", "U'", "L", "F", "L'", "y'", "R'", "U", "R"],
+
+        """
+  O O X
+  - - -
+X|X X X|O
+X|O O O|X
+O|X X O|X
+  - - -
+  X O X""": ["L'", "B'", "L", "R'", "U'", "R", "U", "L'", "B", "L"],
+
+        """
+  X O O
+  - - -
+O|X X X|X
+X|O O O|X
+X|O X X|O
+  - - -
+  X O X""": ["R", "B", "R'", "L", "U", "L'", "U'", "R", "B'", "R'"],
+
+        # P
+        """
+  X X X
+  - - -
+X|O O X|O
+X|O O X|O
+X|O X X|O
+  - - -
+  X O X""": ["F", "U", "R", "U'", "R'", "F'"],
+
+        """
+  O X X
+  - - -
+X|X O O|X
+O|X O O|X
+X|X X O|X
+  - - -
+  O O X""": ["R'", "d'", "L", "d", "R", "U'", "R'", "F'", "R"],
+
+        """
+  X X O
+  - - -
+X|O O X|X
+X|O O X|O
+X|O X X|X
+  - - -
+  X O O""": ["L", "d", "R'", "d'", "L'", "U", "L", "F", "L'"],
+
+        """
+  X X X
+  - - -
+O|X O O|X
+O|X O O|X
+O|X X O|X
+  - - -
+  X O X""": ["F'", "U'", "L'", "U", "L", "F"],
+
+        # T
+        """
+  X O X
+  - - -
+O|X X O|X
+X|O O O|X
+O|X X O|X
+  - - -
+  X O X""": ["F", "R", "U", "R'", "U'", "F'"],
+
+        """
+  O O X
+  - - -
+X|X X O|X
+X|O O O|X
+X|X X O|X
+  - - -
+  O O X""": ["R", "U", "R'", "U'", "R'", "F", "R", "F'"],
+
+
+        # W
+        """
+  X O X
+  - - -
+O|X X O|X
+O|X O O|X
+X|O O X|X
+  - - -
+  X X O""": ["L", "U", "L'", "U", "L", "U'", "L'", "U'", "y2'", "R'", "F", "R", "F'"],
+
+        """
+  X O X
+  - - -
+X|O X X|O
+X|O O X|O
+X|X O O|X
+  - - -
+  O X X""": ["R'", "U'", "R", "U'", "R'", "U", "R", "U", "y", "F", "R'", "F'", "R"],
+
+        # Z
+        """
+  X O O
+  - - -
+X|O X X|X
+X|O O O|X
+O|X X O|X
+  - - -
+  X O X""": ["R'", "F", "R", "U", "R'", "U'", "y", "L'", "d", "R"],
+
+        """
+  O O X
+  - - -
+X|X X O|X
+X|O O O|X
+X|O X X|O
+  - - -
+  X O X""": ["L", "F'", "L'", "U'", "L", "U", "y'", "R", "d'", "L'"],
     }
 
     back_color = rubiks_cube.b.face[1][1].color
@@ -490,7 +843,7 @@ b|X b b|X
         if color == back_color:
             continue
         cube_repr = cube_repr.replace(color, "X")
-    cube_repr = cube_repr.replace(back_color, "b")
+    cube_repr = cube_repr.replace(back_color, "O")
 
     # TODO: rotate 3 times...
     return algo_dic[cube_repr]
@@ -511,3 +864,21 @@ def solve(rubiks_cube):
         step.append(len(solution))
 
     return solution, step
+
+
+# TEST AREA
+if __name__ == '__main__':
+    import random
+
+    c = cube.Cube(real_cube=True)
+    print(c)
+
+    moves = cube.move_list * 10
+    random.shuffle(moves)
+    moves = moves[:5]
+    print("Moves:", moves)
+    c.move_sequence(moves)
+    print(c)
+
+    solution, step = solve(c)
+    print(solution, step)
