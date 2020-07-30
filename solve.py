@@ -296,13 +296,12 @@ def step_2(rubiks_cube):
         ]
     ]
 
-    corner_border_placed = 0
-    while corner_border_placed < 4:
+    corner_border_found = True
+    while corner_border_found:
         corner_border_found = False
         for corner_border in corner_border_list:
             two_layers_corner_border_solution = place_two_layers_corner_border(rubiks_cube, corner_border)
             if two_layers_corner_border_solution:
-                corner_border_placed += 1
                 corner_border_found = True
             solution += [rubiks_cube.current_move_dict[x] for x in two_layers_corner_border_solution]
             rubiks_cube.rotate_x()
@@ -312,7 +311,6 @@ def step_2(rubiks_cube):
                     two_layers_corner_border_solution = prepare_two_layers_corner_border(rubiks_cube, corner_border)
                     two_layers_corner_border_solution += place_two_layers_corner_border(rubiks_cube, corner_border)
                     if two_layers_corner_border_solution:
-                        corner_border_placed += 1
                         corner_border_found = True
                     solution += [rubiks_cube.current_move_dict[x] for x in two_layers_corner_border_solution]
                 rubiks_cube.rotate_x()
