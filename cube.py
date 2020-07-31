@@ -290,11 +290,11 @@ class Face:
         ret = "  " + " ".join([s.color for s in self.u_edge]) + "\n  - - -\n"
         for i in range(3):
             ret += (
-                f"{self.l_edge[i].color}|"
+                f"{self.l_edge[2 - i].color}|"
                 + " ".join([s.color for s in self.face[i]])
                 + f"|{self.r_edge[i].color}\n"
             )
-        ret += "  - - -\n  " + " ".join([s.color for s in self.d_edge])
+        ret += "  - - -\n  " + " ".join([s.color for s in self.d_edge[::-1]])
         return ret
 
 
