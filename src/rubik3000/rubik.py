@@ -1,13 +1,16 @@
+"""
+Some useful documentation
+"""
+
 import sys
-import print_cube
-import cube
-import solve
+from rubik3000 import print_cube, cube, solve
 
 def usage():
     print("usage: %s <scramble>\n\
 <scramble>: scramble to solve" % sys.argv[0])
 
-if __name__ == '__main__':
+def main():
+    """Entry point"""
     if len(sys.argv) != 2:
         print("Invalid argument number", file=sys.stderr)
         usage()

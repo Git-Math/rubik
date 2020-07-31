@@ -1,5 +1,5 @@
 from tkinter import *
-import cube
+from rubik3000 import cube
 
 WINDOW_WIDTH = 1500
 WINDOW_HEIGHT = 1000
@@ -177,4 +177,3 @@ def print_cube(rc, sol, st):
     print_arrow(canvas)
 
     window.mainloop()
-

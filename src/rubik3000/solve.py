@@ -1,4 +1,4 @@
-import cube
+from rubik3000 import cube
 
 
 # STEP 1

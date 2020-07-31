@@ -1,6 +1,6 @@
 import sys
 import random
-import cube
+from rubik3000 import cube
 
 def usage():
     print("usage: %s <number> <length>\n\
@@ -15,7 +15,7 @@ def print_scramble(length, last_move):
     else:
         print(" ", end="")
         print_scramble(length - 1, move)
-    
+
 
 if __name__ == '__main__':
     if len(sys.argv) != 3:
