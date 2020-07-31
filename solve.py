@@ -296,13 +296,12 @@ def step_2(rubiks_cube):
         ]
     ]
 
-    corner_border_placed = 0
-    while corner_border_placed < 4:
+    corner_border_found = True
+    while corner_border_found:
         corner_border_found = False
         for corner_border in corner_border_list:
             two_layers_corner_border_solution = place_two_layers_corner_border(rubiks_cube, corner_border)
             if two_layers_corner_border_solution:
-                corner_border_placed += 1
                 corner_border_found = True
             solution += [rubiks_cube.current_move_dict[x] for x in two_layers_corner_border_solution]
             rubiks_cube.rotate_x()
@@ -312,7 +311,6 @@ def step_2(rubiks_cube):
                     two_layers_corner_border_solution = prepare_two_layers_corner_border(rubiks_cube, corner_border)
                     two_layers_corner_border_solution += place_two_layers_corner_border(rubiks_cube, corner_border)
                     if two_layers_corner_border_solution:
-                        corner_border_placed += 1
                         corner_border_found = True
                     solution += [rubiks_cube.current_move_dict[x] for x in two_layers_corner_border_solution]
                 rubiks_cube.rotate_x()
@@ -853,85 +851,188 @@ X|O X X|O
   X O X""": ["L", "F'", "L'", "U'", "L", "U", "y'", "R", "d'", "L'"],
     }
 
-    def rotate_repr(src):
-        """
-        Rotate 90° clockwise:
-  a b c
-  - - -
-l|m n o|d
-k|t u p|e
-j|s r q|f
-  - - -
-  i h g
-        """
-        dst = list(src)
-        (
-            a, b, c,
-            d, e, f,
-            g, h, i,
-            j, k, l,
-            m, n, o, p,
-            q, r, s, t
-        ) = (
-            3, 5, 7,
-            25, 35, 45,
-            61, 59, 57,
-            37, 27, 17,
-            19, 21, 23, 33,
-            43, 41, 39, 29
-        )
+    solution = []
+    up_color = rubiks_cube.u.face[1][1].color
+    for i in range(4):
+        if not solution:
+            cube_repr = f"\n{rubiks_cube.u}"
+            for color in "ywrogb":
+                if color == up_color:
+                    continue
+                cube_repr = cube_repr.replace(color, "X")
+            cube_repr = cube_repr.replace(up_color, "O")
+            algo_dic_solution = algo_dic.get(cube_repr)
+            algo_dic_solution = algo_dic_solution if algo_dic_solution else []
+            rubiks_cube.move_sequence(algo_dic_solution)
+            solution = [rubiks_cube.current_move_dict[x] for x in algo_dic_solution]
+        rubiks_cube.rotate_x()
 
-        dst[a] = src[j]
-        dst[b] = src[k]
-        dst[c] = src[l]
-
-        dst[d] = src[a]
-        dst[e] = src[b]
-        dst[f] = src[c]
-
-        dst[g] = src[d]
-        dst[h] = src[e]
-        dst[i] = src[f]
-
-        dst[j] = src[g]
-        dst[k] = src[h]
-        dst[l] = src[i]
-
-        dst[m] = src[s]
-        dst[n] = src[t]
-        dst[o] = src[m]
-        dst[p] = src[n]
-
-        dst[q] = src[o]
-        dst[r] = src[p]
-        dst[s] = src[q]
-        dst[t] = src[r]
-
-        return "".join(dst)
-
-    back_color = rubiks_cube.b.face[1][1].color
-    cube_repr = f"\n{rubiks_cube.b}"
-    for color in "ywrogb":
-        if color == back_color:
-            continue
-        cube_repr = cube_repr.replace(color, "X")
-    cube_repr = cube_repr.replace(back_color, "O")
-
-    for i in range(3):
-        try:
-            return algo_dic[cube_repr]
-        except KeyError:
-            cube_repr = rotate_repr(cube_repr)
-    raise ValueError(
-        "Error: step 3 can't be solved. "
-        "Proceeding to smash the cube into a wall... "
-        "*BOOOM* ... Recovery successful!"
-    )
-
+    return solution
 
 # STEP 4
+def position_tuple_list_to_0_7_tuple(position_list):
+    u_0_7_position_list = []
+    for position in position_list:
+        if position[0] != "u":
+            raise ValueError("Position {position} not on the up face.")
+        u_0_7_position = position[1] * 3 + position[2]
+        if u_0_7_position > 4:
+            u_0_7_position -= 1
+        u_0_7_position_list.append(u_0_7_position)
+
+    return tuple(u_0_7_position_list)
+
+
+def solve_u_edge(rubiks_cube, u_0_7_position_tuple):
+    switch_u_0_7_tuple = {
+        # A
+        (7, 1, 0,
+         3,    4,
+         5, 6, 2): ["R'", "F", "R'", "B2", "R", "F'", "R'", "B2", "R2"],
+
+        (0, 1, 7,
+         3,    4,
+         2, 6, 5): ["R", "B'", "R", "F2", "R'", "B", "R", "F2", "R2"],
+
+        # U
+        (0, 1, 2,
+         6,    3,
+         5, 4, 7): ["R2", "U", "R", "U", "R'", "U'", "R'", "U'", "R'", "U", "R'"],
+
+        (0, 1, 2,
+         4,    6,
+         5, 3, 7): ["R", "U'", "R", "U", "R", "U", "R", "U'", "R'", "U'", "R2"],
+
+        # H
+        (0, 6, 2,
+         4,    3,
+         5, 1, 7): ["R2", "L2", "D", "R2", "L2", "U2", "R2", "L2", "D", "R2", "L2"],
+
+        # T
+        (0, 1, 7,
+         4,    3,
+         5, 6, 2): ["R", "U", "R'", "U'", "R'", "F", "R2", "U'", "R'", "U'", "R", "U", "R'", "F'"],
+
+        # J
+        (2, 3, 0,
+         1,    4,
+         5, 6, 7): ["R'", "U", "L'", "U2", "R", "U'", "R'", "U2", "R", "L", "U'"],
+
+        (0, 1, 7,
+         3,    6,
+         5, 4, 2): ["R", "U", "R'", "F'", "R", "U", "R'", "U'", "R'", "F", "R2", "U'", "R'", "U'"],
+
+        # R
+        (2, 1, 0,
+         6,    4,
+         5, 3, 7): ["L", "U2'", "L'", "U2'", "L", "F'", "L'", "U'", "L", "U", "L", "F", "L2'", "U"],
+
+        (2, 1, 0,
+         3,    6,
+         5, 4, 7): ["R'", "U2", "R", "U2", "R'", "F", "R", "U", "R'", "U'", "R'", "F'", "R2", "U'"],
+
+        # V
+        (7, 4, 2,
+         3,    1,
+         5, 6, 0): ["R'", "U", "R'", "U", "F'", "L'", "F2", "U'", "F'", "U", "F'", "L", "F" "L"],
+
+        # G
+        (5, 4, 0,
+         1,    3,
+         2, 6, 7): ["R2", "D", "B'", "U", "B'", "U'", "B", "D'", "R2", "F'", "U", "F"],
+
+        (7, 3, 2,
+         6,    4,
+         0, 1, 5): ["R'", "U'", "R", "B2", "D", "L'", "U", "L", "U'", "L", "D'", "B2"],
+
+        (7, 1, 2,
+         6,    3,
+         0, 4, 5): ["R2", "D'", "F", "U'", "F", "U", "F'", "D", "R2", "B", "U'", "B'"],
+
+        (5, 3, 0,
+         6,    4,
+         2, 1, 7): ["R", "U", "R'", "F2", "D'", "L", "U'", "L'", "U", "L'", "D", "F2"],
+
+        # F
+        (0, 1, 2,
+         4,    3,
+         7, 6, 5): ["R'", "U2", "R'", "U'", "B'", "R'", "B2", "U'", "B'", "U", "B'", "R", "B", "U'", "R"],
+
+        # Z
+        (0, 3, 2,
+         1,    6,
+         5, 4, 7): ["R2", "L2", "D", "R2", "L2", "U", "R'", "L", "F2", "R2", "L2", "B2", "R'", "L", "U2"],
+
+        # Y
+        (7, 3, 2,
+         1,    4,
+         5, 6, 0): ["F", "R", "U'", "R'", "U'", "R", "U", "R'", "F'", "R", "U", "R'", "U'", "R'", "F", "R", "F'"],
+
+        # N
+        (7, 6, 2,
+         3,    4,
+         5, 1, 0): ["L", "U'", "R" ,"U2", "L'", "U", "R'", "L", "U'", "R", "U2", "L'", "U", "R'", "U"],
+
+        (0, 6, 5,
+         3,    4,
+         2, 1, 7): ["R'", "U", "L'", "U2", "R", "U'", "L", "R'", "U", "L'", "U2", "R", "U'", "L", "U'"],
+
+        # E
+        (5, 1, 7,
+         3,    4,
+         0, 6, 2): ["R", "B'", "R'", "F", "R", "B", "R'", "F2", "L'", "B", "L", "F", "L'", "B'", "L"]
+    }
+    solution = switch_u_0_7_tuple.get(u_0_7_position_tuple)
+    solution = solution if solution else []
+    rubiks_cube.move_sequence(solution)
+
+    return solution
+
+
 def step_4(rubiks_cube):
-    return []
+    solution = []
+    u_corner_border_list = [
+        (rubiks_cube.u.face[1][1].color, rubiks_cube.l.face[1][1].color, rubiks_cube.b.face[1][1].color),
+        (rubiks_cube.u.face[1][1].color, rubiks_cube.b.face[1][1].color),
+        (rubiks_cube.u.face[1][1].color, rubiks_cube.b.face[1][1].color, rubiks_cube.r.face[1][1].color),
+        (rubiks_cube.u.face[1][1].color, rubiks_cube.l.face[1][1].color),
+        (rubiks_cube.u.face[1][1].color, rubiks_cube.r.face[1][1].color),
+        (rubiks_cube.u.face[1][1].color, rubiks_cube.f.face[1][1].color, rubiks_cube.l.face[1][1].color),
+        (rubiks_cube.u.face[1][1].color, rubiks_cube.f.face[1][1].color),
+        (rubiks_cube.u.face[1][1].color, rubiks_cube.r.face[1][1].color, rubiks_cube.f.face[1][1].color)
+    ]
+
+    for i in range(4):
+        if not solution:
+            u_corner_border_list = [
+                (rubiks_cube.u.face[1][1].color, rubiks_cube.l.face[1][1].color, rubiks_cube.b.face[1][1].color),
+                (rubiks_cube.u.face[1][1].color, rubiks_cube.b.face[1][1].color),
+                (rubiks_cube.u.face[1][1].color, rubiks_cube.b.face[1][1].color, rubiks_cube.r.face[1][1].color),
+                (rubiks_cube.u.face[1][1].color, rubiks_cube.l.face[1][1].color),
+                (rubiks_cube.u.face[1][1].color, rubiks_cube.r.face[1][1].color),
+                (rubiks_cube.u.face[1][1].color, rubiks_cube.f.face[1][1].color, rubiks_cube.l.face[1][1].color),
+                (rubiks_cube.u.face[1][1].color, rubiks_cube.f.face[1][1].color),
+                (rubiks_cube.u.face[1][1].color, rubiks_cube.r.face[1][1].color, rubiks_cube.f.face[1][1].color)
+            ]
+
+            u_position_list = []
+            for corner_border in u_corner_border_list:
+                u_position_list.append(rubiks_cube.where_is(*corner_border))
+            # u_0_7_position_tuple is the up face positions from 0 to 7 (see cube below)
+            # the index of the tuple is the position where the corresponding value is supposed to be
+            # the value is the actual position from 0 to 7
+            #
+            #               0 1 2
+            #               3 X 4
+            #               5 6 7
+            #
+            u_0_7_position_tuple = position_tuple_list_to_0_7_tuple(u_position_list)
+            u_edge_solution = solve_u_edge(rubiks_cube, u_0_7_position_tuple)
+            solution += [rubiks_cube.current_move_dict[x] for x in u_edge_solution]
+        rubiks_cube.rotate_x()
+        i += 1
+
+    return solution
 
 
 # SOLVE ENTRY POINT
