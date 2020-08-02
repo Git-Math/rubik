@@ -105,13 +105,13 @@ def print_step(canvas, step, solution_i, old_step_text):
     if not step:
         step_string = "Short solution"
     elif solution_i < step[0]:
-        step_string = "Step 1:"
+        step_string = "Step 1: White cross"
     elif solution_i < step[1]:
-        step_string = "Step 2:"
+        step_string = "Step 2: First two layers"
     elif solution_i < step[2]:
-        step_string = "Step 3:"
+        step_string = "Step 3: Orient last layer"
     else:
-        step_string = "Step 4:"
+        step_string = "Step 4: Permute last layer"
 
     return canvas.create_text(START_STEP_TEXT_X, START_STEP_TEXT_Y, anchor=CENTER, font=(TEXT_FONT, TEXT_SIZE, TEXT_WEIGHT), width=TEXT_WIDTH, text=step_string)
 
