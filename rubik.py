@@ -40,8 +40,6 @@ if __name__ == '__main__':
         print("This rubik's cube is already solved")
         sys.exit(0)
 
-    print(*scramble_move_list, sep = " ")
-
     _, solution = rubiks_cube.search_short_solution(cube.move_list, [], 3)
     step = None
 
