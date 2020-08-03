@@ -7,15 +7,17 @@ def usage():
 <number>: number of scramble (must be a number between 1 and 99)\n\
 <length>: length of one scramble (must be a number between 1 and 999)" % sys.argv[0])
 
-def print_scramble(length, last_move):
-    move = random.choice([x for x in cube.move_list if len(last_move) == 0 or x[0] != last_move[0]])
-    print(move, end="")
-    if length <= 1:
-        print()
-    else:
-        print(" ", end="")
-        print_scramble(length - 1, move)
-    
+def print_scramble(length):
+    last_move = ""
+    for i in range(length):
+        move = random.choice([x for x in cube.move_list if len(last_move) == 0 or x[0] != last_move[0]])
+        print(move, end="")
+        if i < length - 1:
+            print(" ", end="")
+        else:
+            print()
+        last_move = move
+        i += 1
 
 if __name__ == '__main__':
     if len(sys.argv) != 3:
@@ -40,4 +42,4 @@ if __name__ == '__main__':
         sys.exit(1)
 
     for i in range(number):
-        print_scramble(length, "")
+        print_scramble(length)
