@@ -1041,6 +1041,44 @@ def step_4(rubiks_cube):
     return solution
 
 
+# REMOVE_DUPLICATE
+def remove_duplicate(solution, step):
+    solution_remove_duplicate = []
+
+    switch_duplicate_move_pair = {
+        ("X", "X"): ["X2"],
+        ("X", "X'"): [],
+        ("X", "X2"): ["X'"],
+
+        ("X'", "X"): [],
+        ("X'", "X'"): ["X2"],
+        ("X'", "X2"): ["X"],
+
+        ("X2", "X"): ["X'"],
+        ("X2", "X'"): ["X"],
+        ("X2", "X2"): []
+    }
+
+    i = 0
+    while i < len(solution):
+        if i < len(solution) - 1 and solution[i][0] == solution[i + 1][0]:
+            fusion_move = switch_duplicate_move_pair[("X" + solution[i][1::], "X" + solution[i + 1][1::])]
+            solution_remove_duplicate += [x.replace("X", solution[i][0]) for x in fusion_move]
+            for i_step, e in enumerate(step):
+                if e == i + 1:
+                    step[i_step] = e - 1
+                elif e > i and fusion_move:
+                    step[i_step] = e - 1
+                elif e > i:
+                    step[i_step] = e - 2
+            i += 1
+        else:
+            solution_remove_duplicate.append(solution[i])
+        i += 1
+
+    return solution_remove_duplicate, step
+
+
 # SOLVE ENTRY POINT
 def solve(rubiks_cube):
     solution = []
@@ -1049,5 +1087,7 @@ def solve(rubiks_cube):
     for step_func in step_func_list:
         solution += step_func(rubiks_cube)
         step.append(len(solution))
+
+    solution, step = remove_duplicate(solution, step)
 
     return solution, step
