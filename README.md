@@ -17,6 +17,8 @@ $ python3 rubik.py "R B2 D' R2 U2 F2 B' U' D2 L' U' L D2 L B R U' B L' B R2 F2 B
 B' D' B' L' D' B' U2 B U2 R U R' U R U' R' L U' L' U2 R' U' R U2 R' U' R U R' U' R B' U2 B U' L U L' U F U F' U2 F U F' U' F U F' L2 D L' U2 L D' L' U2 L' U R' U L' U2 R U' R' U2 R L U'
 ```
 
+https://github.com/Git-Math/rubik/assets/11985913/13197c0e-9e12-465f-b6e0-0a444a8f86c1
+
 ## Generate random scramble
 
 ### How to run
